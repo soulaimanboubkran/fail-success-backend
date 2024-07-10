@@ -1,9 +1,10 @@
 import express from 'express';
-import dotenv from 'dotenv';
+
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
-
+import authRouter from '../fsb/routes/auth.route.js'
+import dotenv from 'dotenv';
 dotenv.config()
 
 const app = express();
@@ -34,6 +35,8 @@ app.listen(PORT, ()=> {
     connect();
     console.log(`Server is running on port ${PORT}`);
 });
+
+app.use("/api/auth",authRouter)
 
 
 app.use((err,req,res,next)=>{
