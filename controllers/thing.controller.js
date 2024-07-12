@@ -56,3 +56,51 @@ export const createThing = async (req, res, next) => {
       next(error);
     }
   };
+
+  export const setState = async (req, res, next) => {
+    try {
+      const { id } = req.params; // Assuming the thing ID is passed as a URL parameter
+      const { state } = req.body;
+  
+      // Validate required fields
+      if (!state) {
+        return next(errorHandler(400, "Missing required fields"));
+      }
+  
+      // Update the thing in the database
+      const updatedThing = await Thing.findByIdAndUpdate(
+        id,
+        {  state },
+        { new: true } // To return the updated document
+      );
+  
+      // Check if the thing was found and updated
+      if (!updatedThing) {
+        return next(errorHandler(404, "Thing not found"));
+      }
+  
+      return res.status(200).json({ updatedThing });
+    } catch (error) {
+      next(error);
+    }
+  };
+  export const deleteThing = async (req, res, next) => {
+    try {
+      const { id } = req.params; // Assuming the thing ID is passed as a URL parameter
+  
+      // Delete the thing from the database
+      const deletedThing = await Thing.findByIdAndDelete(id);
+  
+      // Check if the thing was found and deleted
+      if (!deletedThing) {
+        return next(errorHandler(404, "Thing not found"));
+      }
+  
+      
+  
+      return res.status(200).json({ message: "Thing deleted successfully" });
+    } catch (error) {
+      next(error);
+    }
+  };
+  

@@ -7,7 +7,9 @@ const ThingSchema = new mongoose.Schema(
     description:{type:String,required:false},
     type:{type:String,enum: ['private', 'public'],required:true,default:'private'},
     state:{type: String,
-        enum: ['fail', 'success']},
+        enum: ['fail', 'success',null],
+        default:null
+      },
     userRef: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User', // Reference the User model
