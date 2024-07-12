@@ -4,6 +4,9 @@ import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import authRouter from '../fsb/routes/auth.route.js'
+import thingRouter from '../fsb/routes/thing.route.js'
+import userRouter from '../fsb/routes/user.route.js'
+
 import dotenv from 'dotenv';
 dotenv.config()
 
@@ -37,7 +40,8 @@ app.listen(PORT, ()=> {
 });
 
 app.use("/api/auth",authRouter)
-
+app.use("/api/thing",thingRouter)
+app.use("/api/user",userRouter)
 
 app.use((err,req,res,next)=>{
     const statusCode = err.statusCode || 500;

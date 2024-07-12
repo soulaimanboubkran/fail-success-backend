@@ -1,4 +1,4 @@
-import { verify } from "jsonwebtoken";
+import jwt from 'jsonwebtoken';
 
 // const verifyToken = (req, res, next) => {
 //   const authHeader = req.headers.token;
@@ -14,33 +14,31 @@ import { verify } from "jsonwebtoken";
 //   }
 // };
 
-const verifyToken = async (request, response, next) => {
+export const verifyToken = async (req, response, next) => {
   try {
     //   get the token from the authorization header
-    const token = await request.headers.token.split(" ")[1];
-
+    const token = await req.headers.token.split(" ")[1];
+console.log(token)
     //check if the token matches the supposed origin
-    const decodedToken = await verify(token, "RANDOM-TOKEN");
+    const decodedToken = await jwt.verify(token, process.env.JWT_SECRET);
 
     // retrieve the user details of the logged in user
     const user = await decodedToken;
 
     // pass the user down to the endpoints here
-    request.user = user;
-
+    req.user = user;
+console.log(user)
     // pass down functionality to the endpoint
     next();
     
   } catch (error) {
-    response.status(401).json({
-      error: new Error("Invalid request!"),
-    });
+    next(error);
   }
 };
 
-const verifyTokenAndAuthorization = (req, res, next) => {
+export const verifyTokenAndAuthorization = (req, res, next) => {
   verifyToken(req, res, () => {
-    if (req.user.id === req.params.id || req.user.isAdmin) {
+    if (req.user.userId === req.params.id || req.user.isAdmin) {
       next();
     } else {
       res.status(403).json("You are not alowed to do that!");
@@ -56,10 +54,4 @@ const verifyTokenAndAdmin = (req, res, next) => {
       res.status(403).json("You are not alowed to do that!");
     }
   });
-};
-
-export default {
-  verifyToken,
-  verifyTokenAndAuthorization,
-  verifyTokenAndAdmin,
 };

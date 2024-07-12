@@ -4,6 +4,8 @@ import mongoose from 'mongoose';
 const ThingSchema = new mongoose.Schema(
   {
     thing:{type:String,required:true},
+    description:{type:String,required:false},
+    type:{type:String,enum: ['private', 'public'],required:true,default:'private'},
     state:{type: String,
         enum: ['fail', 'success']},
     userRef: {
@@ -14,7 +16,7 @@ const ThingSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
+ThingSchema.index({ userRef: 1 });
 const Thing = mongoose.model('Real', ThingSchema);
 
 export default Thing;

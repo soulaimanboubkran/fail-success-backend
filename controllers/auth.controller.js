@@ -25,27 +25,38 @@ export const SignUp = async (req,res,next)=>{
         next(error)
     }
 }
-export const  SignIn =async (req,res,next)=>{
-    const {email,password} = req.body;
+export const SignIn = async (req, res, next) => {
+  const { email, password } = req.body;
 
-    try {
-        const validUser = await User.findOne({email});
-        if(!validUser) return next(errorHandler(404,"User not found!"));
+  try {
+    // Find the user by email and populate the 'stringListRef' field with 'strings'
+    const validUser = await User.findOne({ email });
+    if (!validUser) return next(errorHandler(404, "User not found!"));
 
-        const validPassword = bcryptjs.compareSync(password,validUser.password);
-        if(!validPassword) return next(errorHandler(401,"Wrong credentials!"));
+    // Check if the password matches
+    const validPassword = bcryptjs.compareSync(password, validUser.password);
+    if (!validPassword) return next(errorHandler(401, "Wrong credentials!"));
 
-        const token  = jwt.sign(
-            { userId: validUser._id, isAdmin: validUser.isAdmin },
-            process.env.JWT_SECRET) //in .env you can put any string
+    // Generate JWT token
+    const token = jwt.sign(
+      { userId: validUser._id, isAdmin: validUser.isAdmin },
+      process.env.JWT_SECRET
+    );
 
-            
-        const {password:pass,...rest} = validUser._doc; // rest is the row of that user  without password
-        res.cookie("token",token,{httpOnly:true}).status(200).json({rest,token})
-    } catch (error) {
-        next(error)
-    }
-}
+    // Prepare response data, omitting sensitive fields like 'password'
+    const { password: pass, ...rest } = validUser._doc;
+    const response = {
+      ...rest,
+      token
+    };
+
+    // Set JWT token in a cookie and send the response
+    res.cookie("token", token, { httpOnly: true }).status(200).json(response);
+  } catch (error) {
+    // Pass any errors to the error handling middleware
+    next(error);
+  }
+};
 
 
 export const google = async (req, res, next) => {

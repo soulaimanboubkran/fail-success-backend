@@ -27,6 +27,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
+    stringListRef: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'UserStringList', // Reference the UserStringList model
+    },
   },
   { timestamps: true }
 );
