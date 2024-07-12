@@ -38,25 +38,36 @@ export const createThing = async (req, res, next) => {
       next(error);
     }
   };
-
   export const getThings = async (req, res, next) => {
     try {
       const userId = req.user.userId; // Assuming the authenticated user's ID is available in req.user
+      const sortBy = req.query.sortBy;
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const skip = (page - 1) * limit;
   
-      // Fetch all Thing documents related to the user
-      const things = await Thing.find({ userRef: userId });
+      // Determine sort order based on the query parameter
+      const sortOrder = sortBy === "true" ? -1 : 1;
+  
+      // Fetch Thing documents related to the user with pagination and sorting
+      const things = await Thing.find({ userRef: userId })
+        .sort({ createdAt: sortOrder })
+        .skip(skip)
+        .limit(limit);
+  
+      // Get the total count of documents for this user
+      const total = await Thing.countDocuments({ userRef: userId });
   
       // Check if any things were found
       if (!things.length) {
         return next(errorHandler(404, "No things found for this user"));
       }
   
-      return res.status(200).json({ things });
+      return res.status(200).json({ things, total });
     } catch (error) {
       next(error);
     }
   };
-
   export const setState = async (req, res, next) => {
     try {
       const { id } = req.params; // Assuming the thing ID is passed as a URL parameter
