@@ -67,12 +67,12 @@ export const google = async (req, res, next) => {
         const token = jwt.sign( { userId: user._id, isAdmin: user.isAdmin }, process.env.JWT_SECRET);
         const { password: pass, ...rest } = user._doc;
         const response = {
-          ...rest,
-          token
-        };
-    
-        // Set JWT token in a cookie and send the response
-        res.cookie("token", token, { httpOnly: true }).status(200).json(response);
+      ...rest,
+      token
+    };
+
+    // Set JWT token in a cookie and send the response
+    res.cookie("token", token, { httpOnly: true }).status(200).json(response);
 
       }
        else {
