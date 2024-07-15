@@ -66,10 +66,13 @@ export const google = async (req, res, next) => {
 
         const token = jwt.sign( { userId: user._id, isAdmin: user.isAdmin }, process.env.JWT_SECRET);
         const { password: pass, ...rest } = user._doc;
-        res
-          .cookie('access_token', token, { httpOnly: true })
-          .status(200)
-          .json({rest,token});
+        const response = {
+          ...rest,
+          token
+        };
+    
+        // Set JWT token in a cookie and send the response
+        res.cookie("token", token, { httpOnly: true }).status(200).json(response);
 
       }
        else {
@@ -92,10 +95,13 @@ export const google = async (req, res, next) => {
 
         const token = jwt.sign( { userId: newUser._id, isAdmin: newUser.isAdmin }, process.env.JWT_SECRET);
         const { password: pass, ...rest } = newUser._doc;
-        res
-          .cookie('token', token, { httpOnly: true })
-          .status(200)
-          .json({rest,token});
+        const response = {
+          ...rest,
+          token
+        };
+    
+        // Set JWT token in a cookie and send the response
+        res.cookie("token", token, { httpOnly: true }).status(200).json(response);
       }
     } catch (error) {
       next(error);

@@ -29,7 +29,14 @@ export const createThing = async (req, res, next) => {
       // Find the UserStringList document for the user or create a new one if it doesn't exist
       const userStringList = await UserStringList.findOneAndUpdate(
         { user: userId },
-        { $push: { strings: thing } },
+        {
+          $push: {
+            strings: {
+              $each: [thing], // Add 'thing' to the array
+              $position: 0, // Push it to the beginning
+            },
+          },
+        },
         { new: true, upsert: true }
       );
   

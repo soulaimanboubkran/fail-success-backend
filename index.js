@@ -26,7 +26,7 @@ const connectWithRetry = async () => {
     } catch (error) {
         console.error('MongoDB connection error:', error);
         // Retry connection after a delay
-        setTimeout(connectWithRetry, 5000); // Retry after 5 seconds
+        setTimeout(connectWithRetry, 6000); // Retry after 5 seconds
     }
 };
 
