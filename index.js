@@ -3,9 +3,9 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
-import authRouter from '../fsb/routes/auth.route.js'
-import thingRouter from '../fsb/routes/thing.route.js'
-import userRouter from '../fsb/routes/user.route.js'
+import authRouter from './routes/auth.route.js'
+import thingRouter from './routes/thing.route.js'
+import userRouter from './routes/user.route.js'
 
 import dotenv from 'dotenv';
 dotenv.config()
