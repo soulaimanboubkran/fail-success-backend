@@ -18,23 +18,18 @@ app.use(cookieParser());
 app.use(cors({ origin: "*" }));
 
 // MongoDB Connection
-const connectWithRetry = async () => {
-    try {
-        await mongoose.connect(process.env.MONGO);
-        console.log('Connected to MongoDB');
-    } catch (error) {
-        console.error('MongoDB connection error:', error);
-        setTimeout(connectWithRetry, 5000); // Retry after 5 seconds
-    }
-};
+mongoose
+  .connect(process.env.MONGO)
+  .then(() => console.log("DB Connection Successfull!"))
+  .catch((err) => {
+    console.log(err);
+  });
 
-const connect = async () => {
-    await connectWithRetry();
-};
+
 
 // Start server
 app.listen(PORT, () => {
-    connect();
+    
     console.log(`Server is running on port ${PORT}`);
 });
 
